@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router'
+import { HashRouter } from 'react-router'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { ToastProvider } from '@/components/shared/Toast'
 import { SessionProvider } from '@/lib/session'
@@ -9,7 +9,7 @@ import './index.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <SessionProvider>
         <TooltipProvider delayDuration={150}>
           <ToastProvider>
@@ -17,6 +17,6 @@ createRoot(document.getElementById('root')!).render(
           </ToastProvider>
         </TooltipProvider>
       </SessionProvider>
-    </BrowserRouter>
+    </HashRouter>
   </StrictMode>,
 )

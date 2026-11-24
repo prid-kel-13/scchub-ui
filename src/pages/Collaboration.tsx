@@ -17,6 +17,8 @@ import { cn } from '@/lib/utils'
 import { ChangeDialog } from '@/pages/supplier/dialogs'
 
 const AUTHOR = 'Sinta · Procurement'
+/** Link a supplier would receive (hash route works on static hosting). */
+const waUrl = (poId: string) => `${window.location.origin}${window.location.pathname}#/wa/${poId}`
 const OPEN = PURCHASE_ORDERS.filter((p) => p.status !== 'Diterima')
 const inHorizon = (d: string | null) => !!d && dayIndex(d) - 31 <= 23
 const atRisk = (id: string) => {
@@ -124,7 +126,7 @@ function CheckinTab({ canManage }: { canManage: boolean }) {
             <div className="max-w-[90%] rounded-xl rounded-tl-sm bg-surface px-3.5 py-2.5 text-[13.5px] text-fg shadow-sm">
               Halo Pak/Bu, ini Sinta dari Paragon 🙏<br />
               Boleh minta kabar progres pesanan <b>{poById([...sel][0] ?? 'PO-04571').id}</b>? Cukup pilih satu jawaban di tautan berikut:
-              <div className="mt-1.5 font-medium text-brand underline">scchub.demo/wa/{[...sel][0] ?? 'PO-04571'}</div>
+              <div className="mt-1.5 font-medium break-all text-brand underline">{waUrl([...sel][0] ?? 'PO-04571')}</div>
               <div className="mt-1 text-right text-[10.5px] text-fg-subtle">08:15</div>
             </div>
           </div>

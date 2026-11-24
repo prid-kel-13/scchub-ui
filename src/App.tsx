@@ -13,6 +13,7 @@ import { Planning } from '@/pages/Planning'
 import { PreviewPage } from '@/pages/PreviewPage'
 import { PurchaseOrders } from '@/pages/PurchaseOrders'
 import { Settings } from '@/pages/Settings'
+import { SupplierPerformance } from '@/pages/SupplierPerformance'
 import { SupplierPortal } from '@/pages/supplier/SupplierPortal'
 import { accessFor, type NavKey } from '@/lib/nav'
 import { homePathFor, useSession } from '@/lib/session'
@@ -72,7 +73,7 @@ export default function App() {
         <Route path="/compliance" element={<Guard k="compliance"><Compliance /></Guard>} />
         <Route path="/exceptions" element={<Guard k="exceptions"><Exceptions /></Guard>} />
         <Route path="/planning" element={<Guard k="planning"><Planning /></Guard>} />
-        <Route path="/supplier-performance" element={<Guard k="performance"><PreviewPage navKey="performance" /></Guard>} />
+        <Route path="/supplier-performance" element={<Guard k="performance"><SupplierPerformance /></Guard>} />
         <Route path="/reports" element={<Guard k="reports"><PreviewPage navKey="reports" /></Guard>} />
         <Route path="/settings" element={<Guard k="settings"><Settings /></Guard>} />
       </Route>

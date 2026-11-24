@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useParams } from 'react-router'
 import {
   AlarmClock,
+  Award,
+  FileText,
   ArrowLeft,
   ArrowLeftRight,
   ArrowRight,
@@ -39,6 +41,9 @@ import { ChangeDialog, ConfirmDialog, EstimateDialog, ShipDialog } from './dialo
 import { Documents } from './Documents'
 import { HistoryTab } from './HistoryTab'
 import { Projection } from './Projection'
+import { Merit } from './Merit'
+import { OrderSummary } from './OrderSummary'
+import { meritFor } from '@/data/merit'
 
 type DialogKind = 'confirm' | 'estimate' | 'ship' | 'change'
 interface Ctx {
@@ -125,6 +130,21 @@ function CheckinCard({ poId, sentAt, ctx, onEstimate, onShip }: { poId: string; 
   )
 }
 
+function MeritCard({ supplierId }: { supplierId: string }) {
+  const m = meritFor(supplierId)
+  return (
+    <Link to="/supplier/nilai" className="block rounded-2xl border bg-surface p-5 transition-colors hover:border-teal/40">
+      <div className="text-xs font-semibold tracking-wide text-fg-muted uppercase">Nilai Kemitraan</div>
+      <div className="mt-2 flex items-baseline gap-2">
+        <span className="tnum text-3xl font-semibold text-fg">{m.score}</span>
+        <span className="text-sm text-fg-muted">{m.level}</span>
+      </div>
+      {m.next && <div className="mt-1 text-[13px] text-fg-muted">{m.next.at - m.score} poin lagi menuju {m.next.level}</div>}
+      <span className="mt-2 inline-flex items-center gap-1 text-[13px] font-medium text-teal">Lihat detail <ArrowRight className="size-3.5" /></span>
+    </Link>
+  )
+}
+
 /* ------------------------------------------------------------------ Orders (home) */
 function Orders({ ctx }: { ctx: Ctx }) {
   const s = useCollab()
@@ -196,7 +216,10 @@ function Orders({ ctx }: { ctx: Ctx }) {
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-fg">Pesanan berjalan</h2>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-lg font-semibold text-fg">Pesanan berjalan</h2>
+            <Button size="sm" variant="outline" asChild><Link to="/supplier/ringkasan"><FileText /> Ringkasan order terkonfirmasi</Link></Button>
+          </div>
           <div className="mt-4 space-y-3">
             {active.map((po) => {
               const m = materialById(po.materialId)
@@ -239,6 +262,7 @@ function Orders({ ctx }: { ctx: Ctx }) {
 
       <aside className="space-y-4">
         <PicCard supplierId={ctx.supplierId} />
+        <MeritCard supplierId={ctx.supplierId} />
         {docsMissing.length > 0 && (
           <Link to="/supplier/dokumen" className="block rounded-2xl border border-warning/30 bg-warning-soft/50 p-5 transition-colors hover:bg-warning-soft">
             <div className="flex items-center gap-2 text-sm font-semibold text-fg"><FileCheck2 className="size-4 text-warning" /> {docsMissing.length} dokumen perlu dilengkapi</div>
@@ -366,12 +390,13 @@ export function SupplierPortal({ user }: { user: DemoUser }) {
     { to: '/supplier', label: 'Pesanan Saya', icon: ClipboardList, end: false, badge: todo, match: (p: string) => p === '/supplier' || p.startsWith('/supplier/po') },
     { to: '/supplier/proyeksi', label: 'Proyeksi', icon: LineChart },
     { to: '/supplier/dokumen', label: 'Dokumen Halal & BPOM', icon: FileCheck2, badge: docTodo },
+    { to: '/supplier/nilai', label: 'Nilai Kemitraan', icon: Award },
     { to: '/supplier/riwayat', label: 'Riwayat', icon: History },
   ]
 
   return (
     <div className="min-h-dvh bg-canvas">
-      <header className="border-b bg-surface">
+      <header className="border-b bg-surface print:hidden">
         <div className="mx-auto flex h-16 max-w-[1160px] items-center gap-4 px-4 sm:px-6">
           <Logo tone="dark" />
           <span className="hidden h-6 w-px bg-border sm:block" aria-hidden />
@@ -414,7 +439,7 @@ export function SupplierPortal({ user }: { user: DemoUser }) {
             <button onClick={() => setDismissed(true)} className="text-fg-muted hover:text-fg" aria-label="Tutup pemberitahuan"><X className="size-4" /></button>
           </div>
         )}
-        {!location.pathname.startsWith('/supplier/po') && (
+        {!location.pathname.startsWith('/supplier/po') && !location.pathname.startsWith('/supplier/ringkasan') && (
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="flex items-center gap-1.5 text-sm text-fg-muted"><CalendarDays className="size-4" aria-hidden /> Senin, 9 Nov 2026</p>
@@ -429,6 +454,8 @@ export function SupplierPortal({ user }: { user: DemoUser }) {
           <Route path="proyeksi" element={<Projection supplierId={supplier.id} />} />
           <Route path="dokumen" element={<Documents supplierId={supplier.id} />} />
           <Route path="riwayat" element={<HistoryTab supplierId={supplier.id} />} />
+          <Route path="nilai" element={<Merit supplierId={supplier.id} />} />
+          <Route path="ringkasan" element={<OrderSummary supplierId={supplier.id} />} />
           <Route path="*" element={<Navigate to="/supplier" replace />} />
         </Routes>
       </main>

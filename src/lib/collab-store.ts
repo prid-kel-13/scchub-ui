@@ -16,6 +16,7 @@ import {
   type MessageKind,
 } from '@/data/collab'
 import { poById } from '@/data/mock'
+import { SEED_TASKS, SUPPORT, type PlanTask, type SupportStatus } from '@/data/merit'
 
 export interface Delivery {
   qty: number
@@ -44,10 +45,24 @@ interface State {
   shipments: Record<string, Shipment>
   docs: Record<string, Partial<Record<DocKey, DocStatus>>>
   notices: ChangeNotice[]
+  rawMaterial: Record<string, RawMaterialStatus>
+  clarifications: Clarification[]
+  tasks: PlanTask[]
+  support: Record<string, { status: SupportStatus; reason: string }>
+  earlyRelease: Record<string, boolean>
   seq: number
 }
+export type RawMaterialStatus = 'Tersedia' | 'Sedang dipesan' | 'Ada kendala'
+export interface Clarification {
+  id: string
+  eventId: string
+  supplierId: string
+  note: string
+  status: 'Ditinjau' | 'Tidak dihitung' | 'Tetap dihitung'
+  at: string
+}
 
-const KEY = 'scchub.demo.collab.v1'
+const KEY = 'scchub.demo.collab.v2'
 const seed = (): State => ({
   messages: SEED_MESSAGES,
   checkins: SEED_CHECKINS,
@@ -56,6 +71,11 @@ const seed = (): State => ({
   shipments: {},
   docs: {},
   notices: SEED_NOTICES,
+  rawMaterial: { 'PO-04573': 'Ada kendala', 'PO-04566': 'Sedang dipesan' },
+  clarifications: [],
+  tasks: SEED_TASKS,
+  support: Object.fromEntries(Object.entries(SUPPORT).map(([k, v]) => [k, { status: v.status, reason: v.reason }])),
+  earlyRelease: { 'SUP-B': true },
   seq: 1,
 })
 
@@ -143,8 +163,9 @@ export const collab = {
     })
   },
 
-  updateEstimate(poId: string, author: string, reason: string, detail: string) {
+  updateEstimate(poId: string, author: string, reason: string, detail: string, rm?: RawMaterialStatus) {
     set({
+      rawMaterial: rm ? { ...state.rawMaterial, [poId]: rm } : state.rawMaterial,
       checkins: answerOpenCheckin(poId, 'perbarui', reason),
       messages: [...state.messages, msg(poId, 'supplier', author, `Perbarui estimasi — ${reason}. ${detail}`.trim(), 'estimate')],
     })
@@ -180,6 +201,25 @@ export const collab = {
 
   submitNotice(n: Omit<ChangeNotice, 'id' | 'at' | 'status'>) {
     set({ notices: [{ ...n, id: nextId('PP'), at: now(), status: 'Ditinjau QA' }, ...state.notices] })
+  },
+
+  requestClarification(eventId: string, supplierId: string, note: string) {
+    set({ clarifications: [{ id: nextId('KL'), eventId, supplierId, note, status: 'Ditinjau', at: now() }, ...state.clarifications] })
+  },
+  decideClarification(id: string, status: Clarification['status']) {
+    set({ clarifications: state.clarifications.map((c) => (c.id === id ? { ...c, status } : c)) })
+  },
+  toggleTask(id: string) {
+    set({ tasks: state.tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)) })
+  },
+  addTask(t: Omit<PlanTask, 'id' | 'done'>) {
+    set({ tasks: [...state.tasks, { ...t, id: nextId('T'), done: false }] })
+  },
+  setSupport(supplierId: string, status: SupportStatus, reason: string) {
+    set({ support: { ...state.support, [supplierId]: { status, reason } } })
+  },
+  toggleEarlyRelease(supplierId: string) {
+    set({ earlyRelease: { ...state.earlyRelease, [supplierId]: !state.earlyRelease[supplierId] } })
   },
 
   reviewNotice(id: string, status: ChangeNotice['status']) {

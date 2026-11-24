@@ -178,7 +178,7 @@ export function EstimateDialog({ po, author, onDone, onClose }: { po: PurchaseOr
             setTouched(true)
             if (err) return
             const detail = [needsDays && `Estimasi mundur ${days} hari.`, needsQty && `Bisa kirim ${fmt(qtyNum)} ${m.unit} dulu.`, `${rmLabel}.`, note].filter(Boolean).join(' ')
-            collab.updateEstimate(po.id, author, preset, detail)
+            collab.updateEstimate(po.id, author, preset, detail, ({ tersedia: 'Tersedia', menunggu: 'Sedang dipesan', kendala: 'Ada kendala' } as const)[rm])
             onDone()
           }}
         >

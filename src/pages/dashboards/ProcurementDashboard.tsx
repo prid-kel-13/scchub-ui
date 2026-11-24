@@ -3,7 +3,7 @@ import { AlarmClock, ArrowRight, BellRing, CalendarX2, FilePlus2, Hourglass, Sca
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { UsulanPODialog } from '@/components/shared/UsulanPODialog'
-import { AlertCodeTag, Chip, Meter, Mono, PageHeader, Panel, PhaseTag, SapTag, SimTag } from '@/components/shared/ui-kit'
+import { AlertCodeTag, Chip, Meter, Mono, PageHeader, Panel, SapTag, SimTag } from '@/components/shared/ui-kit'
 import { PURCHASE_ORDERS, SUPPLIER_SCORES, etaSlip, materialById, supplierById } from '@/data/mock'
 import type { POStatus, PurchaseOrder } from '@/data/types'
 import { useProposals } from '@/lib/demo-store'
@@ -209,8 +209,8 @@ function EtaAndScores() {
       </Panel>
       <Panel
         title="Scorecard supplier"
-        description="On-time delivery 8 minggu · indikatif"
-        actions={<Button variant="ghost" size="sm" className="text-brand" asChild><Link to="/supplier-performance">Detail <PhaseTag /></Link></Button>}
+        description="On-time delivery 8 minggu · lihat status pendampingan di Supplier Performance"
+        actions={<Button variant="ghost" size="sm" className="text-brand" asChild><Link to="/supplier-performance">Detail <ArrowRight /></Link></Button>}
       >
         <ul className="space-y-2.5">
           {SUPPLIER_SCORES.map((r) => {

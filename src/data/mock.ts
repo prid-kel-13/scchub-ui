@@ -428,7 +428,7 @@ export function supplierScope(supplierId: string) {
 export const SUPPLIER_PROJECTION: Record<string, { week: string; range: string; [materialId: string]: number | string }[]> = {
   'SUP-A': [
     { week: 'W46', range: '9–15 Nov', 'M-100234': 0, 'M-100241': 0 },
-    { week: 'W47', range: '16–22 Nov', 'M-100234': 15_000, 'M-100241': 4_000 },
+    { week: 'W47', range: '16–22 Nov', 'M-100234': 30_000, 'M-100241': 12_000 },
     { week: 'W48', range: '23–29 Nov', 'M-100234': 20_000, 'M-100241': 8_000 },
     { week: 'W49', range: '30 Nov–6 Des', 'M-100234': 25_000, 'M-100241': 6_000 },
     { week: 'W50', range: '7–13 Des', 'M-100234': 30_000, 'M-100241': 9_000 },

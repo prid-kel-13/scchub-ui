@@ -1,7 +1,9 @@
-import type { ReactNode } from 'react'
-import { Navigate, Route, Routes, useLocation } from 'react-router'
+import { useEffect, type ReactNode } from 'react'
+import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router'
 import { AppShell } from '@/components/shell/AppShell'
 import { AccessDenied } from '@/pages/AccessDenied'
+import { Collaboration } from '@/pages/Collaboration'
+import { Compliance } from '@/pages/Compliance'
 import { Dashboard } from '@/pages/dashboards/Dashboard'
 import { Exceptions } from '@/pages/Exceptions'
 import { IntegratedOverview } from '@/pages/IntegratedOverview'
@@ -37,6 +39,18 @@ function SupplierArea() {
   return <SupplierPortal user={user} />
 }
 
+/** Simulated WhatsApp magic link: opens the supplier portal straight on the PO (demo only, no real auth). */
+function WaLink() {
+  const { poId } = useParams()
+  const { signIn } = useSession()
+  const navigate = useNavigate()
+  useEffect(() => {
+    signIn('supplier')
+    navigate(`/supplier/po/${poId}`, { replace: true, state: { fromWa: true } })
+  }, [poId, signIn, navigate])
+  return null
+}
+
 function Home() {
   const { user } = useSession()
   return <Navigate to={user ? homePathFor(user.id) : '/login'} replace />
@@ -47,13 +61,15 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/wa/:poId" element={<WaLink />} />
       <Route path="/supplier/*" element={<SupplierArea />} />
       <Route element={<InternalArea />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/overview" element={<Guard k="overview"><IntegratedOverview /></Guard>} />
         <Route path="/material-alignment" element={<Guard k="alignment"><MaterialAlignment /></Guard>} />
         <Route path="/purchase-orders" element={<Guard k="po"><PurchaseOrders /></Guard>} />
-        <Route path="/supplier-collaboration" element={<Guard k="collab"><PreviewPage navKey="collab" /></Guard>} />
+        <Route path="/supplier-collaboration" element={<Guard k="collab"><Collaboration /></Guard>} />
+        <Route path="/compliance" element={<Guard k="compliance"><Compliance /></Guard>} />
         <Route path="/exceptions" element={<Guard k="exceptions"><Exceptions /></Guard>} />
         <Route path="/planning" element={<Guard k="planning"><Planning /></Guard>} />
         <Route path="/supplier-performance" element={<Guard k="performance"><PreviewPage navKey="performance" /></Guard>} />

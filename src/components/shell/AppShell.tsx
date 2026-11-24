@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router'
-import { Bell, CalendarClock, ChevronsUpDown, LogOut, Menu, Repeat2, FlaskConical, Unplug } from 'lucide-react'
+import { Bell, CalendarClock, ChevronsUpDown, LogOut, Menu, Repeat2, FlaskConical, RotateCcw, Unplug } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -18,6 +18,7 @@ import { DATA_AS_OF, alertsFor } from '@/data/mock'
 import type { DemoUser } from '@/data/types'
 import { NAV, accessFor, navFor, type NavItem } from '@/lib/nav'
 import { useSession } from '@/lib/session'
+import { collab } from '@/lib/collab-store'
 import { cn } from '@/lib/utils'
 
 const GROUP_LABEL: Record<NavItem['group'], string> = { main: 'Ruang kerja', ops: 'Operasional', insight: 'Analisis & sistem' }
@@ -162,6 +163,9 @@ export function ProfileMenu({ user, compact = false }: { user: DemoUser; compact
         <DropdownMenuGroup>
           <DropdownMenuItem onSelect={() => navigate('/login')}>
             <Repeat2 /> Ganti akun demo
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => collab.reset()}>
+            <RotateCcw /> Reset data demo
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => {

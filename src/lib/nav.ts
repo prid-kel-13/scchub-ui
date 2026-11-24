@@ -1,4 +1,5 @@
 import {
+  BadgeCheck,
   BarChart3,
   Boxes,
   FileBarChart2,
@@ -19,6 +20,7 @@ export type NavKey =
   | 'alignment'
   | 'po'
   | 'collab'
+  | 'compliance'
   | 'exceptions'
   | 'planning'
   | 'performance'
@@ -40,6 +42,7 @@ export const NAV: Record<NavKey, NavItem> = {
   alignment: { key: 'alignment', label: 'Material Alignment', path: '/material-alignment', icon: Boxes, group: 'ops' },
   po: { key: 'po', label: 'Purchase Order', path: '/purchase-orders', icon: ShoppingCart, group: 'ops' },
   collab: { key: 'collab', label: 'Supplier Collaboration', path: '/supplier-collaboration', icon: Handshake, group: 'ops' },
+  compliance: { key: 'compliance', label: 'Halal & BPOM', path: '/compliance', icon: BadgeCheck, group: 'ops' },
   exceptions: { key: 'exceptions', label: 'Risk & Exception', path: '/exceptions', icon: ShieldAlert, phase: 2, group: 'ops' },
   planning: { key: 'planning', label: 'Planning & Forecast', path: '/planning', icon: TrendingUp, group: 'ops' },
   performance: { key: 'performance', label: 'Supplier Performance', path: '/supplier-performance', icon: BarChart3, phase: 2, group: 'insight' },
@@ -50,12 +53,12 @@ export const NAV: Record<NavKey, NavItem> = {
 /** Access per menu, following the role × menu matrix (PDF pp. 10–11). */
 export const ACCESS: Record<Exclude<RoleId, 'supplier'>, Partial<Record<NavKey, string>>> = {
   marketing: { dashboard: 'Lihat', overview: 'Lihat', alignment: 'Ringkasan kesiapan', exceptions: 'Lihat', planning: 'Kelola', reports: 'Lihat' },
-  planner: { dashboard: 'Lihat', overview: 'Lihat', alignment: 'Kelola', po: 'Lihat', collab: 'Lihat', exceptions: 'Kelola', planning: 'Lihat', performance: 'Lihat', reports: 'Lihat' },
-  procurement: { dashboard: 'Lihat', overview: 'Lihat', alignment: 'Lihat', po: 'Kelola', collab: 'Kelola', exceptions: 'Kelola', planning: 'Lihat', performance: 'Lihat', reports: 'Lihat' },
+  planner: { dashboard: 'Lihat', overview: 'Lihat', alignment: 'Kelola', po: 'Lihat', collab: 'Lihat', compliance: 'Lihat', exceptions: 'Kelola', planning: 'Lihat', performance: 'Lihat', reports: 'Lihat' },
+  procurement: { dashboard: 'Lihat', overview: 'Lihat', alignment: 'Lihat', po: 'Kelola', collab: 'Kelola', compliance: 'Kelola', exceptions: 'Kelola', planning: 'Lihat', performance: 'Lihat', reports: 'Lihat' },
   ppic: { dashboard: 'Lihat', overview: 'Lihat', alignment: 'Lihat', po: 'Lihat', exceptions: 'Tanggapi', planning: 'Kelola', reports: 'Lihat' },
-  warehouse: { dashboard: 'Lihat', overview: 'Lihat', alignment: 'Lihat (incoming)', po: 'Konfirmasi terima', exceptions: 'Lihat' },
-  manager: { dashboard: 'Lihat', overview: 'Lihat', alignment: 'Lihat', po: 'Lihat', collab: 'Lihat', exceptions: 'Setujui', planning: 'Lihat', performance: 'Lihat', reports: 'Lihat' },
-  admin: { dashboard: 'Kesehatan integrasi', overview: 'Lihat', reports: 'Lihat (log)', settings: 'Konfigurasi' },
+  warehouse: { dashboard: 'Lihat', overview: 'Lihat', alignment: 'Lihat (incoming)', po: 'Konfirmasi terima', compliance: 'Lihat (CoA)', exceptions: 'Lihat' },
+  manager: { dashboard: 'Lihat', overview: 'Lihat', alignment: 'Lihat', po: 'Lihat', collab: 'Lihat', compliance: 'Lihat', exceptions: 'Setujui', planning: 'Lihat', performance: 'Lihat', reports: 'Lihat' },
+  admin: { dashboard: 'Kesehatan integrasi', overview: 'Lihat', compliance: 'Lihat', reports: 'Lihat (log)', settings: 'Konfigurasi' },
 }
 
 export function navFor(role: RoleId): NavItem[] {

@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { AlarmClock, ArrowRight, BellRing, CalendarX2, FilePlus2, Hourglass, Network, Scale, Truck } from 'lucide-react'
+import { AlarmClock, ArrowRight, BellRing, CalendarX2, FilePlus2, Hourglass, Scale, Send, Truck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { UsulanPODialog } from '@/components/shared/UsulanPODialog'
@@ -123,7 +123,7 @@ function CommitmentQueue() {
       tone: 'warning',
       title: `Belum ada konfirmasi · batas ${po74.confirmDeadline}`,
       detail: 'Label Depan Serum 30.000 pcs dari Supplier E. Pengingat otomatis sudah terkirim (simulasi).',
-      action: <SoonAction label="Kirim pengingat" icon={BellRing} />,
+      action: <Button size="sm" variant="outline" asChild><Link to="/supplier-collaboration?tab=update"><BellRing /> Minta update</Link></Button>,
     },
     {
       po: po78,
@@ -242,8 +242,8 @@ export function ProcurementDashboard() {
         meta={<><SimTag /><SapTag /></>}
         actions={
           <>
-            <Button variant="outline" asChild><Link to="/overview"><Network /> Integrated Overview</Link></Button>
-            <Button asChild><Link to="/purchase-orders">Semua PO <ArrowRight /></Link></Button>
+            <Button variant="outline" asChild><Link to="/purchase-orders">Semua PO <ArrowRight /></Link></Button>
+            <Button className="bg-teal hover:bg-teal/90" asChild><Link to="/supplier-collaboration?tab=update"><Send /> Minta Update Progres</Link></Button>
           </>
         }
       />
